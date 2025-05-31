@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Matcher</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --bg-color: #eef1f5;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --header-bg: #007bff;
+            --alert-bg: #e2e3e5;
+        }
+
+        body.dark-mode {
+            --bg-color: #1f1f1f;
+            --card-bg: #2c2c2c;
+            --text-color: #f1f1f1;
+            --header-bg: #343a40;
+            --alert-bg: #2a2a2a;
+        }
+
+        body {
+            background: linear-gradient(to right, #e3f2fd, #e0f7fa);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            margin-top: 80px;
+            max-width: 800px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: background-color 0.3s ease;
+        }
+
+        .card-header {
+            background-color: var(--header-bg);
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 500;
+            border-radius: 15px 15px 0 0;
+            padding: 1rem 1.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .alert {
+            background-color: var(--alert-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-center">
+                🔍 Job Description & Resume Matcher
+            </div>
+            <div class="card-body">
+                <form action="/matcher" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="job_description">Job Description</label>
+                        <textarea class="form-control" name="job_description" id="job_description" rows="5" placeholder="Paste your job description here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="resumes">Upload Resumes</label>
+                        <input type="file" class="form-control-file" id="resumes" name="resumes" multiple accept=".pdf,.docx,.txt">
+                        <small class="form-text text-muted">Accepted formats: .pdf, .docx, .txt</small>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary">Match Resumes</button>
+                    </div>
+                </form>
+
+                {% if message %}
+                    <div class="alert alert-info mt-4" role="alert">
+                        <h5>{{ message }}</h5>
+                        {% if top_resumes and similarity_scores %}
+                        <ul>
+                            {% for index in range(top_resumes|length) %}
+                                <li><strong>{{ top_resumes[index] }}</strong> — Similarity Score: <code>{{ similarity_scores[index] }}</code></li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- JS dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Theme toggle script -->
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
